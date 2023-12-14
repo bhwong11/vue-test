@@ -1,19 +1,20 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getFirestore} from 'firebase/firestore';
+import { getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDPCLe9fv5GoiVOqNz9wscZfLhiTYtYcKw",
-  authDomain: "vue-quiz-2c084.firebaseapp.com",
-  projectId: "vue-quiz-2c084",
-  storageBucket: "vue-quiz-2c084.appspot.com",
-  messagingSenderId: "790463361933",
-  appId: "1:790463361933:web:30b8179426d3b4373643c4",
-  measurementId: "G-KHC95H42MM"
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
+  measurementId: import.meta.env.VITE_MEASUREMENT_ID
 };
 
 // Initialize Firebase

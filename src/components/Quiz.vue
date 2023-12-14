@@ -2,8 +2,10 @@
 import { ref, computed, watch } from 'vue'
 import Option from './Option.vue';
 import {questionIndexStore} from '../stores/index'
+import { collection, doc, setDoc, getDoc,updateDoc } from "firebase/firestore"; 
+import db from "../database/index"
 
-const props = defineProps<{ msg: string }>()
+defineProps<{ msg: string }>()
 
 type TriviaData = {
   type: boolean
@@ -94,8 +96,23 @@ const setAnswer = (answer:string) => {
   allAnswersData.value[questionIndexStore.currentQuestionIndex].correct = isCorrect
 }
 
-const submitScore = ()=>{
+const submitScore = async ()=>{
   console.log('SUBMITTING',username.value)
+  const docRef = doc(db, "users", username.value);
+  const docSnap = await getDoc(docRef);
+  const existingUser = docSnap.data()
+  console.log('docSnap!!',docSnap.data())
+  console.log('score',existingUser?.score)
+  if(existingUser){
+    updateDoc(docRef,{
+      score:existingUser.score+score
+    })
+    return
+  }
+  await setDoc(doc(db, "users", username.value), {
+    username:username.value,
+    score:score.value
+  });
 }
 
 
@@ -131,7 +148,7 @@ const countInc=()=>{
       :correct="currentQuestion?.correct_answer===option"
       @answer-question="({answer})=>setAnswer(answer)"
     />
-    <div v-if="showScore">
+    <div>
       score:{{ score }}
       <label for="username">
         username
