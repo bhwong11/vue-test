@@ -5,6 +5,7 @@ const props = defineProps<{
   option: string, 
   correct:boolean,
   isSelected:boolean
+  key:string
 }>()
 
 const emit = defineEmits({
@@ -22,7 +23,7 @@ const emitAnswer = ()=>{
 </script>
 
 <template>
-  <div :class="{'border-green':isSelected}" @click="emitAnswer">
+  <div :class="{'border-green':isSelected}" :key="props.key" @click="emitAnswer">
     {{ option }}
   </div>
 </template>

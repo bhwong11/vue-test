@@ -1,17 +1,33 @@
 <script setup lang="ts">
 import Quiz from './components/Quiz.vue'
+import Home from './components/Home.vue'
+import Scores from './components/Scores.vue'
+import { ref } from 'vue'
+import { computed } from '@vue/reactivity'
+
+const routes:{[key: string]:any} ={
+  '/':Home,
+  '/quiz':Quiz,
+  '/scores':Scores
+}
+
+const currentPath = ref(window.location.pathname)
+
+window.addEventListener('hashchange',()=>{
+  currentPath.value = window.location.pathname
+})
+
+const currentView = computed(()=>{
+  return routes[currentPath.value || '/']
+})
+
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <component :is="currentView" />
+  <div v-if="!currentView">
+    <h2>404 not found</h2>
   </div>
-  <Quiz msg="Vite + Vue" />
 </template>
 
 <style scoped>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import Option from './Option.vue';
-import {questionIndexStore} from '../stores/index'
-import { collection, doc, setDoc, getDoc,updateDoc } from "firebase/firestore"; 
+import {questionIndexStore,usernameStore} from '../stores/index'
+import { doc, setDoc, getDoc,updateDoc } from "firebase/firestore"; 
 import db from "../database/index"
 
 defineProps<{ msg: string }>()
@@ -36,6 +36,7 @@ const getTrivia = () => fetch('https://opentdb.com/api.php?amount=10').then(
     questionIndexStore.currentQuestionIndex = 0
   }
 )
+getTrivia()
 
 const score = computed(()=>{
   return allAnswersData.value.reduce((all,next)=>all+(next.correct?1:0),0)
@@ -58,14 +59,12 @@ const currentQuestionOptions = computed(()=>{
 
 const isLastQuestion = computed(()=>(questionIndexStore.currentQuestionIndex+1)>=triviaData.value.length)
 
-const username = ref("")
-
 const usernameData = computed({
   get:()=>{
-    return username.value
+    return usernameStore.username
   },
   set:(newValue)=>{
-    username.value = newValue
+    usernameStore.username = newValue
   }
 })
 
@@ -74,7 +73,6 @@ const currentSelectedOption = computed(()=>{
 })
 
 const moveToNextQuestion = ()=>{
-  console.log('IS LASZT',isLastQuestion.value)
   if(isLastQuestion.value){
     showScore.value = true
     return
@@ -97,20 +95,19 @@ const setAnswer = (answer:string) => {
 }
 
 const submitScore = async ()=>{
-  console.log('SUBMITTING',username.value)
-  const docRef = doc(db, "users", username.value);
+  const docRef = doc(db, "users", usernameStore.username);
   const docSnap = await getDoc(docRef);
   const existingUser = docSnap.data()
   console.log('docSnap!!',docSnap.data())
   console.log('score',existingUser?.score)
   if(existingUser){
     updateDoc(docRef,{
-      score:existingUser.score+score
+      score:existingUser.score+score.value
     })
     return
   }
-  await setDoc(doc(db, "users", username.value), {
-    username:username.value,
+  await setDoc(doc(db, "users", usernameStore.username), {
+    username:usernameStore.username,
     score:score.value
   });
 }
@@ -135,20 +132,23 @@ const countInc=()=>{
   <h1>{{ msg }}</h1>
 
   <div class="card">
+    <h2>Quiz</h2>
     {{ allAnswersData }}
     {{ questionIndexStore.currentQuestionIndex }}
     <button type="button" @click="countInc">count is {{ count }}</button>
     <button type="button" @click="getTrivia">get questions/reset</button>
     <button type="button" @click="moveToNextQuestion">next question</button>
     <button type="button" @click="moveToLastQuestion">last question</button>
+    <h5 v-show="currentQuestion?.question">{{ currentQuestion?.question }}</h5>
     <Option
-      v-for="option in currentQuestionOptions"
+      v-for="(option,index) in currentQuestionOptions"
       :option="option"
+      :key="`option-${index}`"
       :is-selected="currentSelectedOption===option"
       :correct="currentQuestion?.correct_answer===option"
       @answer-question="({answer})=>setAnswer(answer)"
     />
-    <div>
+    <div v-if="showScore">
       score:{{ score }}
       <label for="username">
         username
