@@ -24,6 +24,11 @@ const currentView = computed(()=>{
 </script>
 
 <template>
+  <ul class="nav">
+    <li><a href="/">home</a></li>
+    <li><a href="/quiz">quiz</a></li>
+    <li><a href="/scores">scores</a></li>
+  </ul>
   <component :is="currentView" />
   <div v-if="!currentView">
     <h2>404 not found</h2>
@@ -31,6 +36,13 @@ const currentView = computed(()=>{
 </template>
 
 <style scoped>
+.nav{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap:1rem;
+  list-style-type: none;
+}
 * {
   margin: 0;
   padding: 0;
