@@ -23,7 +23,7 @@ const emitAnswer = ()=>{
 </script>
 
 <template>
-  <div :class="{'border-green':isSelected}" :key="props.key" @click="emitAnswer">
+  <div :class="{'border-green':isSelected,'border-black':!isSelected}" :key="props.key" @click="emitAnswer">
     {{ option }}
   </div>
 </template>
@@ -34,5 +34,8 @@ const emitAnswer = ()=>{
 }
 .border-green{
   border: 2px solid greenyellow;
+}
+.border-black{
+  border: 2px solid black;
 }
 </style>
