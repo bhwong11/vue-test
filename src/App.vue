@@ -13,6 +13,8 @@ const routes:{[key: string]:any} ={
 
 const currentPath = ref(window.location.pathname)
 
+const testValue = ref('')
+
 window.addEventListener('hashchange',()=>{
   currentPath.value = window.location.pathname
 })
@@ -33,6 +35,10 @@ const currentView = computed(()=>{
   <div v-if="!currentView">
     <h2>404 not found</h2>
   </div>
+  <label>
+    test
+  <input v-model="testValue"/>
+  </label>
 </template>
 
 <style scoped>
