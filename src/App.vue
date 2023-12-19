@@ -2,7 +2,7 @@
 import Quiz from './components/Quiz.vue'
 import Home from './components/Home.vue'
 import Scores from './components/Scores.vue'
-import { ref } from 'vue'
+import { ref,onUpdated } from 'vue'
 import { computed } from '@vue/reactivity'
 
 const routes:{[key: string]:any} ={
@@ -10,6 +10,12 @@ const routes:{[key: string]:any} ={
   '/quiz':Quiz,
   '/scores':Scores
 }
+
+const renders = ref(0)
+onUpdated(()=>{
+  renders.value++
+  console.log('updated!! parent',renders.value)
+})
 
 const currentPath = ref(window.location.pathname)
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onUpdated, onBeforeUpdate } from 'vue'
 import Option from './Option.vue';
 import {questionIndexStore,usernameStore} from '../stores/index'
 import { doc, setDoc, getDoc,updateDoc } from "firebase/firestore"; 
@@ -21,6 +21,14 @@ type AnswerData = {
   answer:string | null,
   correct:boolean | null
 }
+const renders = ref(0)
+onBeforeUpdate(()=>{
+  console.log('before update!!')
+})
+onUpdated(()=>{
+  renders.value++
+  console.log('updated!!',renders.value)
+})
 
 const count = ref(0)
 const triviaData = ref<TriviaData[]>([])
